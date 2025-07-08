@@ -3,8 +3,8 @@
  * @see README.md#usage
  */
 
-const ora = require('ora');
-const chalk = require('chalk');
+const ora = require('ora').default;
+const chalk = require('chalk').default;
 const EventBus = require('../core/eventBus');
 const {
   addWallet,
@@ -19,22 +19,26 @@ const {
  * @param {import('commander').Command} program - The commander program instance.
  */
 function registerWalletCommands(program) {
-  program
-    .command('wallet add <name>')
+  const walletCmd = program
+    .command('wallet')
+    .description('Manage wallets');
+
+  walletCmd
+    .command('add <name>')
     .description('Add a new wallet by name')
     .action(async (name) => {
       const spinner = ora(`Adding wallet ${name}`).start();
       try {
-        const wallet = await addWallet(name);
-        spinner.succeed(chalk.green(`Wallet added: ${wallet.publicKey}`));
-        EventBus.emit('wallet.add', { name: wallet.name, publicKey: wallet.publicKey });
+        const walletRecord = await addWallet(name);
+        spinner.succeed(chalk.green(`Wallet added: ${walletRecord.publicKey}`));
+        EventBus.emit('wallet.add', { name: walletRecord.name, publicKey: walletRecord.publicKey });
       } catch (error) {
         spinner.fail(chalk.red(error.message));
       }
     });
 
-  program
-    .command('wallet list')
+  walletCmd
+    .command('list')
     .description('List all wallets')
     .action(async () => {
       const spinner = ora('Listing wallets').start();
@@ -50,8 +54,8 @@ function registerWalletCommands(program) {
       }
     });
 
-  program
-    .command('wallet resync <name>')
+  walletCmd
+    .command('resync <name>')
     .description('Resynchronize a wallet')
     .action(async (name) => {
       const spinner = ora(`Resyncing wallet ${name}`).start();
@@ -64,8 +68,8 @@ function registerWalletCommands(program) {
       }
     });
 
-  program
-    .command('wallet scan <pubkey>')
+  walletCmd
+    .command('scan <pubkey>')
     .description('Scan a wallet by public key')
     .action(async (pubkey) => {
       const spinner = ora(`Scanning wallet ${pubkey}`).start();
@@ -78,8 +82,8 @@ function registerWalletCommands(program) {
       }
     });
 
-  program
-    .command('wallet pnl <name>')
+  walletCmd
+    .command('pnl <name>')
     .description('Calculate P&L for a wallet')
     .action(async (name) => {
       const spinner = ora(`Calculating P&L for ${name}`).start();

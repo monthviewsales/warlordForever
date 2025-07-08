@@ -3,7 +3,7 @@
  * @see README.md#error-handling
  */
 
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 /**
  * Handle errors by logging and exiting.

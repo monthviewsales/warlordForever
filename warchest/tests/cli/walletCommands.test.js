@@ -4,20 +4,24 @@ const registerWalletCommands = require('../../src/cli/walletCommands');
 describe('CLI wallet commands', () => {
   let program;
 
+  let walletCmd;
   beforeEach(() => {
     program = new Command();
-    jest.spyOn(program, 'command').mockReturnValue({
+    walletCmd = {
+      command: jest.fn().mockReturnThis(),
       description: jest.fn().mockReturnThis(),
       action: jest.fn().mockReturnThis()
-    });
+    };
+    jest.spyOn(program, 'command').mockReturnValue(walletCmd);
     registerWalletCommands(program);
   });
 
   test('registers wallet commands', () => {
-    expect(program.command).toHaveBeenCalledWith('wallet add <name>');
-    expect(program.command).toHaveBeenCalledWith('wallet list');
-    expect(program.command).toHaveBeenCalledWith('wallet resync <name>');
-    expect(program.command).toHaveBeenCalledWith('wallet scan <pubkey>');
-    expect(program.command).toHaveBeenCalledWith('wallet pnl <name>');
+    expect(program.command).toHaveBeenCalledWith('wallet');
+    expect(walletCmd.command).toHaveBeenCalledWith('add <name>');
+    expect(walletCmd.command).toHaveBeenCalledWith('list');
+    expect(walletCmd.command).toHaveBeenCalledWith('resync <name>');
+    expect(walletCmd.command).toHaveBeenCalledWith('scan <pubkey>');
+    expect(walletCmd.command).toHaveBeenCalledWith('pnl <name>');
   });
 });
