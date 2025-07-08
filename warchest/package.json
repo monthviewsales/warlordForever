@@ -1,0 +1,28 @@
+{
+  "name": "warchest",
+  "version": "1.0.0",
+  "description": "macOS-native CLI wallet manager for Solana trading bot project warlordForever",
+  "main": "src/index.js",
+  "bin": {
+    "warchest": "src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "lint": "eslint .",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@prisma/client": "*",
+    "@solana/kit": "*",
+    "chalk": "*",
+    "commander": "*",
+    "dotenv": "*",
+    "keytar": "*",
+    "ora": "*"
+  },
+  "devDependencies": {
+    "eslint": "*",
+    "jest": "*",
+    "prisma": "*"
+  }
+}
