@@ -7,7 +7,7 @@ const { PrismaClient } = require('@prisma/client');
 const Solana = require('./solana');
 const Keychain = require('./keychain');
 const EventBus = require('./eventBus');
-const errorHandler = require('./errorHandler');
+const handleError = require('./errorHandler');
 
 const prisma = new PrismaClient();
 
@@ -18,16 +18,14 @@ const prisma = new PrismaClient();
  */
 async function addWallet(name) {
   try {
-    const { publicKey, keychainRef } = await Solana.createWallet();
-    const privateKey = await Solana.getPrivateKey(publicKey);
-    await Keychain.saveKey(keychainRef, privateKey);
+    const { publicKey, keychainRef } = await Solana.createWallet(name);
     const wallet = await prisma.wallet.create({
       data: { name, publicKey, keychainRef }
     });
     EventBus.emit('wallet.add', { name, publicKey });
     return wallet;
   } catch (error) {
-    errorHandler(error);
+    handleError(error);
   }
 }
 
@@ -39,7 +37,7 @@ async function listWallets() {
   try {
     return await prisma.wallet.findMany();
   } catch (error) {
-    errorHandler(error);
+    handleError(error);
   }
 }
 
@@ -54,7 +52,7 @@ async function resyncWallet(name) {
     await Solana.syncWallet(wallet.publicKey);
     EventBus.emit('wallet.resync', { name });
   } catch (error) {
-    errorHandler(error);
+    handleError(error);
   }
 }
 
@@ -67,7 +65,7 @@ async function scanWallet(publicKey) {
     await Solana.scanAccounts(publicKey);
     EventBus.emit('wallet.scan', { publicKey });
   } catch (error) {
-    errorHandler(error);
+    handleError(error);
   }
 }
 
@@ -84,7 +82,7 @@ async function calculatePnl(name) {
     EventBus.emit('wallet.pnl', { name, pnl });
     return pnl;
   } catch (error) {
-    errorHandler(error);
+    handleError(error);
   }
 }
 

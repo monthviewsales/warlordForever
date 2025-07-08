@@ -13,12 +13,14 @@
   },
   "dependencies": {
     "@prisma/client": "*",
-    "@solana/kit": "*",
+    "@solana-tracker/data-api": "^0.0.5",
+    "@solana/kit": "^2.2.0",
     "chalk": "*",
     "commander": "*",
     "dotenv": "*",
     "keytar": "*",
-    "ora": "*"
+    "ora": "*",
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
     "eslint": "*",
