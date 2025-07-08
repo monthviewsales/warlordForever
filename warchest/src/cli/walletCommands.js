@@ -88,9 +88,43 @@ function registerWalletCommands(program) {
     .action(async (name) => {
       const spinner = ora(`Calculating P&L for ${name}`).start();
       try {
-        const pnl = await calculatePnl(name);
-        spinner.succeed(chalk.green(`P&L for ${name}: ${pnl}`));
-        EventBus.emit('wallet.pnl', { name, pnl });
+        const data = await calculatePnl(name);
+        spinner.succeed(chalk.green(`P&L for ${name}`));
+
+        // Summary table
+        console.log(chalk.bold('\nSummary:'));
+        console.table([{
+          'Realized': data.summary.realized,
+          'Unrealized': data.summary.unrealized,
+          'Total': data.summary.total,
+          'Total Invested': data.summary.totalInvested,
+          'Average Buy Amount': data.summary.averageBuyAmount,
+          'Total Wins': data.summary.totalWins,
+          'Total Losses': data.summary.totalLosses,
+          'Win %': data.summary.winPercentage,
+          'Loss %': data.summary.lossPercentage,
+        }]);
+
+        // Per-token breakdown
+        console.log(chalk.bold('\nTokens:'));
+        Object.entries(data.tokens).forEach(([mint, tok]) => {
+          console.log(chalk.underline(mint));
+          console.table([{
+            'Holding': tok.holding,
+            'Held': tok.held,
+            'Sold': tok.sold,
+            'Realized': tok.realized,
+            'Unrealized': tok.unrealized,
+            'Total': tok.total,
+            'Total Sold': tok.total_sold,
+            'Total Invested': tok.total_invested,
+            'Avg Buy Amt': tok.average_buy_amount,
+            'Current Value': tok.current_value,
+            'Cost Basis': tok.cost_basis,
+          }]);
+        });
+
+        EventBus.emit('wallet.pnl', { name, summary: data.summary, tokens: data.tokens });
       } catch (error) {
         spinner.fail(chalk.red(error.message));
       }
