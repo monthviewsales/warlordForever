@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Wallet {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  publicKey   String   @unique
+  keychainRef String
+  tags        String?
+  createdAt   DateTime @default(now())
+  balances    Balance[]
+  trades      Trade[]
+}
+
+model Token {
+  mint     String   @id
+  symbol   String
+  name     String
+  decimals Int
+  balances Balance[]
+  trades   Trade[]
+}
+
+model Balance {
+  id           Int      @id @default(autoincrement())
+  wallet       Wallet   @relation(fields: [walletId], references: [id])
+  walletId     Int
+  token        Token    @relation(fields: [tokenMint], references: [mint])
+  tokenMint    String
+  amount       Float
+  lastSyncedAt DateTime @default(now())
+}
+
+model Trade {
+  id        Int      @id @default(autoincrement())
+  wallet    Wallet   @relation(fields: [walletId], references: [id])
+  walletId  Int
+  token     Token    @relation(fields: [tokenMint], references: [mint])
+  tokenMint String
+  side      String
+  amount    Float
+  price     Float
+  timestamp DateTime
+}

@@ -1,0 +1,131 @@
+
+You are an expert Node.js engineer. Your task is to generate a macOS-native CLI wallet manager for a Solana trading bot project called `warlordForever`. The module is named `warchest`. You must output a complete project skeleton—no commentary—and organize it exactly as follows:
+
+```
+warchest/
+├── .env.example
+├── package.json
+├── .eslintrc.js
+├── jest.config.js
+├── README.md
+├── prisma/
+│   └── schema.prisma
+├── src/
+│   ├── index.js
+│   ├── cli/
+│   │   └── walletCommands.js
+│   └── core/
+│       ├── warchest.js
+│       ├── solana.js
+│       ├── keychain.js
+│       ├── eventBus.js
+│       └── errorHandler.js
+├── tests/
+│   ├── cli/
+│   │   └── walletCommands.test.js
+│   └── core/
+│       ├── warchest.test.js
+│       ├── solana.test.js
+│       ├── keychain.test.js
+│       ├── eventBus.test.js
+│       └── errorHandler.test.js
+└── .github/
+    ├── dependabot.yml
+    └── workflows/
+        ├── test-develop.yml
+        └── test-main.yml
+```
+
+### 1. CommonJS + JSDoc  
+- All code in CommonJS (`require`/`module.exports`).  
+- Every public function, class, and event emitter/listener must have a detailed JSDoc comment referencing README sections.
+
+### 2. CLI Interface  
+- Use `commander` to define:
+  - `warlordForever wallet add <name>`
+  - `warlordForever wallet list`
+  - `warlordForever wallet resync <name>`
+  - `warlordForever wallet scan <pubkey>`
+  - `warlordForever wallet pnl <name>`
+- Use `chalk` for colored output and `ora` for spinners.
+
+### 3. Key Security  
+- Never write private keys to disk, `.env`, or database.  
+- Use macOS Keychain (`keytar` or `security` CLI) in `keychain.js`.
+
+### 4. Database  
+- Prisma + MySQL.  
+- `prisma/schema.prisma` with models:
+  - `Wallet` (id, name, publicKey, keychainRef, tags, createdAt)
+  - `Token` (mint, symbol, name, decimals)
+  - `Balance` (walletId, tokenMint, amount, lastSyncedAt)
+  - `Trade` (walletId, tokenMint, side, amount, price, timestamp)
+
+### 5. RPC & API  
+- Use `@solana/kit` only; forbid `solana/web3.js`.  
+- Load from `.env` (`.env.example`):
+  ```
+  SOLANA_RPC_URL=
+  SOLANA_API_KEY=
+  API_DEBUG=false   # log RPC call & response
+  DEBUG_MODE=false  # log extra critical info
+  ```
+- Wrap calls with `if (process.env.API_DEBUG)` / `if (process.env.DEBUG_MODE)`.
+
+### 6. Event Architecture  
+- Central EventEmitter in `eventBus.js`.  
+- Emit named events (`"wallet.add"`, `"wallet.resync"`, etc.) with typed payloads.  
+- Document all events in JSDoc and README.
+
+### 7. Error Handling  
+- Reusable `errorHandler.js` to format/log errors.  
+- Wrap all async ops in try/catch forwarding to `errorHandler`.
+
+### 8. Stubbing  
+- Mark expensive or future API calls with `// TODO:` in code.
+
+### 9. Tooling  
+- Include `.eslintrc.js` (Airbnb or Standard).  
+- `package.json` must list all dependencies and scripts:
+  ```json
+  "scripts": {
+    "start": "node src/index.js",
+    "lint": "eslint .",
+    "test": "jest"
+  }
+  ```
+- Add `jest.config.js` for CommonJS and coverage thresholds.  
+- No Docker; run natively on macOS.
+
+### 10. Documentation  
+- `README.md` with:
+  - Overview & install (`npm install`, `.env` setup).
+  - Usage examples for every CLI command.
+  - Table of emitted events (name, description, payload).
+  - How to enable `API_DEBUG` and `DEBUG_MODE`.
+  - How to run tests: `npm test`.
+  - Description of Git branch workflow.
+
+### 11. Unit Testing with Jest  
+- Write comprehensive Jest tests in `tests/` covering:
+  - CLI command parsing and output.
+  - Keychain operations (mock `keytar`/`security`).
+  - RPC calls (mock `@solana/kit` responses).
+  - Event emissions and listener behavior.
+  - Error handling paths (simulate failures).  
+- Achieve ≥ 90% coverage on all modules.  
+- Use `jest.mock()` for external dependencies and provide clear assertions.
+
+### 12. GitHub Integration & Branch Workflow  
+- Create `.github/dependabot.yml` enabling weekly Dependabot alerts for `npm` dependencies.  
+- Create GitHub Actions workflows:
+  - `test-develop.yml`: on push to `develop`, run `npm test`.  
+  - `test-main.yml`: on pull_request to `main`, run `npm test`.  
+- Branch strategy:  
+  1. `main` is the protected release branch.  
+  2. `develop` mirrors `main`; feature/topic branches branch off `develop`.  
+  3. After merging into `develop`, Actions run tests and then open a PR to `main`.  
+  4. On PR to `main`, Actions run tests before merge.
+
+---
+**Output ONLY the full contents of each file** in the tree above, in order. Do not write any extra explanation. Start with `.env.example` and end with `.github/workflows/test-main.yml`.
