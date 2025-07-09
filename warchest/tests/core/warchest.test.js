@@ -1,9 +1,11 @@
-const warchest = require('../../src/core/warchest');
-const eventBus = require('../../src/core/eventBus');
+jest.mock('@prisma/client');
 jest.mock('../../src/core/solana');
 jest.mock('../../src/core/keychain');
 
 const { PrismaClient } = require('@prisma/client');
+const warchest = require('../../src/core/warchest');
+const eventBus = require('../../src/core/eventBus');
+jest.spyOn(eventBus, 'emit');
 
 describe('core warchest', () => {
   let prismaMock;

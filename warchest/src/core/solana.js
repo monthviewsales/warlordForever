@@ -4,7 +4,7 @@
  */
 
 // import RPC and keypair signer utilities from kit
-const { createSolanaRpc, createKeyPairSignerFromBytes } = require('@solana/kit');
+const { createKeyPairSignerFromBytes } = require('@solana/kit');
 const nacl = require('tweetnacl');
 const EventBus = require('./eventBus');
 const keychain = require('./keychain');
@@ -12,7 +12,6 @@ const errorHandler = require('./errorHandler');
 const { Client } = require('@solana-tracker/data-api');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const LAMPORTS_PER_SOL = 1e9;
 
 // initialize Data API client
 const dataApiClient = new Client({ apiKey: process.env.SOLANA_API_KEY });
@@ -53,26 +52,6 @@ async function getPrivateKey(publicKey) {
   }
 }
 
-/**
- * Sync wallet accounts from the network.
- * @param {string} publicKey - Public key of the wallet.
- */
-async function syncWallet(publicKey) {
-  EventBus.emit('solana.sync.start', { publicKey });
-  try {
-    const rpc = createSolanaRpc(process.env.SOLANA_RPC_URL);
-    const lamports = await rpc.getBalance(publicKey).send();
-    const solBalance = lamports / LAMPORTS_PER_SOL;
-    EventBus.emit('solana.sync.complete', {
-      publicKey,
-      balances: { sol: solBalance }
-    });
-    return { sol: solBalance };
-  } catch (err) {
-    errorHandler(err);
-    throw err;
-  }
-}
 
 /**
  * Scan token accounts for a wallet.
@@ -298,7 +277,6 @@ async function calculatePnl(publicKey) {
 module.exports = {
   createWallet,
   getPrivateKey,
-  syncWallet,
   scanAccounts,
   calculatePnl
 };

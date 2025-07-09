@@ -15,11 +15,11 @@
     "@prisma/client": "*",
     "@solana-tracker/data-api": "^0.0.5",
     "@solana/kit": "^2.2.0",
-    "chalk": "*",
+    "chalk": "^4.1.2",
     "commander": "*",
     "dotenv": "*",
     "keytar": "*",
-    "ora": "*",
+    "ora": "^5.4.1",
     "tweetnacl": "^1.0.3"
   },
   "devDependencies": {

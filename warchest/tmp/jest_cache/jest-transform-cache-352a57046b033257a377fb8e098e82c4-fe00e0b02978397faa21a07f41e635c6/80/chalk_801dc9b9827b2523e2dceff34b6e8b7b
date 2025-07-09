@@ -1,0 +1,15 @@
+51211dd51016a3f43d5f083fb4cfc877
+/**
+ * Manual mock for chalk to avoid ESM import issues in tests.
+ */
+const chalk = {
+  red: msg => msg,
+  green: msg => msg,
+  cyan: msg => msg,
+  bold: msg => msg,
+  underline: msg => msg
+};
+module.exports = {
+  default: chalk
+};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjaGFsayIsInJlZCIsIm1zZyIsImdyZWVuIiwiY3lhbiIsImJvbGQiLCJ1bmRlcmxpbmUiLCJtb2R1bGUiLCJleHBvcnRzIiwiZGVmYXVsdCJdLCJzb3VyY2VzIjpbImNoYWxrLmpzIl0sInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogTWFudWFsIG1vY2sgZm9yIGNoYWxrIHRvIGF2b2lkIEVTTSBpbXBvcnQgaXNzdWVzIGluIHRlc3RzLlxuICovXG5jb25zdCBjaGFsayA9IHtcbiAgcmVkOiAobXNnKSA9PiBtc2csXG4gIGdyZWVuOiAobXNnKSA9PiBtc2csXG4gIGN5YW46IChtc2cpID0+IG1zZyxcbiAgYm9sZDogKG1zZykgPT4gbXNnLFxuICB1bmRlcmxpbmU6IChtc2cpID0+IG1zZyxcbn07XG5tb2R1bGUuZXhwb3J0cyA9IHsgZGVmYXVsdDogY2hhbGsgfTsiXSwibWFwcGluZ3MiOiJBQUFBO0FBQ0E7QUFDQTtBQUNBLE1BQU1BLEtBQUssR0FBRztFQUNaQyxHQUFHLEVBQUdDLEdBQUcsSUFBS0EsR0FBRztFQUNqQkMsS0FBSyxFQUFHRCxHQUFHLElBQUtBLEdBQUc7RUFDbkJFLElBQUksRUFBR0YsR0FBRyxJQUFLQSxHQUFHO0VBQ2xCRyxJQUFJLEVBQUdILEdBQUcsSUFBS0EsR0FBRztFQUNsQkksU0FBUyxFQUFHSixHQUFHLElBQUtBO0FBQ3RCLENBQUM7QUFDREssTUFBTSxDQUFDQyxPQUFPLEdBQUc7RUFBRUMsT0FBTyxFQUFFVDtBQUFNLENBQUMiLCJpZ25vcmVMaXN0IjpbXX0=
