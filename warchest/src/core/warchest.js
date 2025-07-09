@@ -49,7 +49,7 @@ async function resyncWallet(name) {
   try {
     const wallet = await prisma.wallet.findUnique({ where: { name } });
     if (!wallet) throw new Error('Wallet not found');
-    await Solana.syncWallet(wallet.publicKey);
+    await Solana.scanAccounts(wallet.publicKey);
     EventBus.emit('wallet.resync', { name });
   } catch (error) {
     handleError(error);
