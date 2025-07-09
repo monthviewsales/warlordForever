@@ -41,38 +41,42 @@ async function listWallets() {
 }
 
 /**
- * Resync wallet data.
+ * Resync wallet data by scanning accounts and persisting results.
  * @param {string} name - Name of the wallet.
+ * @returns {Promise<Array<object>>} Token summaries from the scan.
  */
 async function resyncWallet(name) {
   try {
     const prisma = new PrismaClient();
     const wallet = await prisma.wallet.findUnique({ where: { name } });
     if (!wallet) throw new Error('Wallet not found');
-    await Solana.scanAccounts(wallet.publicKey);
+    const tokens = await Solana.scanAccounts(wallet.publicKey);
     EventBus.emit('wallet.resync', { name });
+    return tokens;
   } catch (error) {
     handleError(error);
   }
 }
 
 /**
- * Scan wallet balances.
+ * Scan wallet balances and persist results.
  * @param {string} publicKey - Public key of the wallet.
+ * @returns {Promise<Array<object>>} Token summaries from the scan.
  */
 async function scanWallet(publicKey) {
   try {
-    await Solana.scanAccounts(publicKey);
+    const tokens = await Solana.scanAccounts(publicKey);
     EventBus.emit('wallet.scan', { publicKey });
+    return tokens;
   } catch (error) {
     handleError(error);
   }
 }
 
 /**
- * Calculate P&L for a wallet.
+ * Calculate P&L for a wallet and persist snapshot.
  * @param {string} name - Name of the wallet.
- * @returns {Promise<number>} The P&L value.
+ * @returns {Promise<object>} The P&L data including summary and tokens.
  */
 async function calculatePnl(name) {
   try {

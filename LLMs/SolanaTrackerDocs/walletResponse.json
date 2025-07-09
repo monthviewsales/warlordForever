@@ -1,0 +1,509 @@
+{
+    "tokens": [
+      {
+        "token": {
+          "name": "hornyCoin",
+          "symbol": "69420",
+          "mint": "GJU3bXxNkNtYxgjkoFhAdq7VrXJAB2GW4Cpt6kLcbonk",
+          "uri": "https://ipfs-forward.solanatracker.io/ipfs/bafkreigtpyvep63xz42ly7wj547e26ndzknk2tfz7pof3uctuosnc7xx54",
+          "decimals": 6,
+          "isMutable": false,
+          "createdOn": "https://bonk.fun",
+          "image": "https://image.solanatracker.io/proxy?url=https%3A%2F%2Fipfs-forward.solanatracker.io%2Fipfs%2Fbafkreic6vnk622xc6unm4iitvqmpr4x3kwbri337ewdijgdjo4gpvg5jyi",
+          "website": "https://www.infinitebackrooms.com/dreams/conversation-1733961793-scenario-terminal-videogames-txt#:~:text=Dark%22%3B%0A%20%20%20%20uint256%20public-,hornyCoin%20%3D%2069420,-%3B%0A%20%20%20%20bool%20public%20isLewd",
+          "hasFileMetaData": true,
+          "strictSocials": {
+            "website": "https://www.infinitebackrooms.com/dreams/conversation-1733961793-scenario-terminal-videogames-txt#:~:text=Dark%22%3B%0A%20%20%20%20uint256%20public-"
+          },
+          "creation": {
+            "creator": "En5AaBtu96ZQTdkjA9FV17ccYUKqgVRaM3rkDW5rJGZs",
+            "created_tx": "HSQUSs6xGQBXg7zfRJgTbfweq7ZtUdebVQnrYPVBw2ThVLGw7Uu2MqF7LGKuBdZrcCPeJUv9HXDNNyqiZdgat24",
+            "created_time": 1752064938
+          }
+        },
+        "pools": [
+          {
+            "poolId": "AnkA5sa9gBPKZi5quCmkcPnsRHN3zGUfWJ66WHWK24T",
+            "liquidity": {
+              "quote": 832.710209348,
+              "usd": 127816.80892429195
+            },
+            "price": {
+              "quote": 0.000008333944394206017,
+              "usd": 0.0012792183478258958
+            },
+            "tokenSupply": 999999385.946018,
+            "lpBurn": 67,
+            "tokenAddress": "GJU3bXxNkNtYxgjkoFhAdq7VrXJAB2GW4Cpt6kLcbonk",
+            "marketCap": {
+              "quote": 8333.939276714276,
+              "usd": 1279217.5623167756
+            },
+            "market": "raydium-cpmm",
+            "quoteToken": "So11111111111111111111111111111111111111112",
+            "decimals": 6,
+            "security": {
+              "freezeAuthority": null,
+              "mintAuthority": null
+            },
+            "deployer": "WLHv2UAZm6z4KyaaELi5pjdbJh6RESMva1Rnn8pJVVh",
+            "lastUpdated": 1752083656201,
+            "createdAt": 1752065457304
+          },
+          {
+            "poolId": "A5oT1saHR69W52fQM1uduYbc14LP49PLNL4kD4szWR79",
+            "liquidity": {
+              "quote": 133.207253267,
+              "usd": 22255.38603408904
+            },
+            "price": {
+              "quote": 0.000007581453376119414,
+              "usd": 0.0011637147793619887
+            },
+            "tokenSupply": 999999385.946018,
+            "lpBurn": 0,
+            "tokenAddress": "GJU3bXxNkNtYxgjkoFhAdq7VrXJAB2GW4Cpt6kLcbonk",
+            "marketCap": {
+              "quote": 7581.448720697779,
+              "usd": 1163714.0647782944
+            },
+            "market": "meteora-dlmm",
+            "quoteToken": "So11111111111111111111111111111111111111112",
+            "decimals": 6,
+            "security": {
+              "freezeAuthority": null,
+              "mintAuthority": null
+            },
+            "lastUpdated": 1752083653386,
+            "createdAt": 1752073162560,
+            "deployer": "GfRWBv8rgbZFTvgxX8qrVtisyJ69zkWHPyi2dWyTukZL"
+          },
+          {
+            "poolId": "EuB7ZGAJmSvvSL2yJAGE7di3aSVeXvfJ5vjjVwsbyM5x",
+            "liquidity": {
+              "quote": 0,
+              "usd": 0
+            },
+            "price": {
+              "quote": 4.108264875233206e-7,
+              "usd": 0.00006342553836265137
+            },
+            "tokenSupply": 1000000000,
+            "lpBurn": 100,
+            "tokenAddress": "GJU3bXxNkNtYxgjkoFhAdq7VrXJAB2GW4Cpt6kLcbonk",
+            "marketCap": {
+              "quote": 0,
+              "usd": 0
+            },
+            "market": "raydium-launchpad",
+            "launchpad": {
+              "name": "letsbonk.fun",
+              "url": "https://letsbonk.fun/",
+              "logo": "https://sapphire-working-koi-276.mypinata.cloud/ipfs/bafkreicgnuyebtmnyhmjbwd32t5w2hcwbtwqlrxsc5eedpgtjy7q4remfa",
+              "baseLiquidity": {
+                "amount": 1073025605.596382,
+                "usd": 68057.22671186055
+              },
+              "quoteLiquidity": {
+                "amount": 30.000852951,
+                "usd": 4631.688334476971
+              }
+            },
+            "curvePercentage": 100,
+            "quoteToken": "So11111111111111111111111111111111111111112",
+            "decimals": 6,
+            "security": {
+              "freezeAuthority": null,
+              "mintAuthority": null
+            },
+            "deployer": "En5AaBtu96ZQTdkjA9FV17ccYUKqgVRaM3rkDW5rJGZs",
+            "lastUpdated": 1752065455267,
+            "createdAt": 1752064938192
+          }
+        ],
+        "events": {
+          "1m": {
+            "priceChangePercentage": 10.616658533903
+          },
+          "5m": {
+            "priceChangePercentage": 16.493042320722
+          },
+          "15m": {
+            "priceChangePercentage": -10.36961472403
+          },
+          "30m": {
+            "priceChangePercentage": 41.31890989169
+          },
+          "1h": {
+            "priceChangePercentage": 74.565342782987
+          },
+          "2h": {
+            "priceChangePercentage": 353.22123890908
+          },
+          "3h": {
+            "priceChangePercentage": 280.24061311896
+          },
+          "4h": {
+            "priceChangePercentage": 560.97599264812
+          },
+          "5h": {
+            "priceChangePercentage": 1025.0445937161
+          },
+          "6h": {
+            "priceChangePercentage": 1778.2434140246
+          },
+          "12h": {
+            "priceChangePercentage": 1778.2434140246
+          },
+          "24h": {
+            "priceChangePercentage": 1778.2434140246
+          }
+        },
+        "risk": {
+          "top10": 24.64310924626326,
+          "rugged": false,
+          "risks": [
+            {
+              "name": "No social media",
+              "description": "This token has no social media links",
+              "level": "warning",
+              "score": 2000
+            },
+            {
+              "name": "LP Burned",
+              "description": "Allows the owner to remove liquidity at any time.",
+              "value": "67%",
+              "level": "danger",
+              "score": 4000
+            },
+            {
+              "name": "Top 10 Holders",
+              "description": "Top 10 holders own more than 24.64% of the total supply.",
+              "value": "24.64%",
+              "level": "danger",
+              "score": 5000
+            }
+          ],
+          "score": 8
+        },
+        "buys": 2010,
+        "sells": 2033,
+        "txns": 4043,
+        "holders": 1715,
+        "balance": 2271.903875,
+        "value": 2.9062611213967506
+      },
+      {
+        "token": {
+          "name": "Wrapped SOL",
+          "symbol": "SOL",
+          "mint": "So11111111111111111111111111111111111111112",
+          "uri": "",
+          "decimals": 9,
+          "hasFileMetaData": false,
+          "image": "https://image.solanatracker.io/proxy?url=https%3A%2F%2Fraw.githubusercontent.com%2Fsolana-labs%2Ftoken-list%2Fmain%2Fassets%2Fmainnet%2FSo11111111111111111111111111111111111111112%2Flogo.png",
+          "strictSocials": {},
+          "creation": {
+            "creator": "GDRyCLiAQ22L871gNs6ZNi8WUgD4tJ2dnbuFujYgCJEu",
+            "created_tx": "236BGezDhCNkdeKpmyWSanu2gWHWsX5egmsQwPYRdhbgztRfv14aw4mSBJ9qwyehxpxLqERXeLCNQnDA6ynp1i8b",
+            "created_time": 1732823402
+          }
+        },
+        "pools": [
+          {
+            "liquidity": {
+              "quote": 10216481.460562477,
+              "usd": 10216481.460562477
+            },
+            "price": {
+              "quote": 153.49494636840186,
+              "usd": 153.49494636840186
+            },
+            "tokenSupply": 535720170.33405286,
+            "lpBurn": 0,
+            "tokenAddress": "So11111111111111111111111111111111111111112",
+            "marketCap": {
+              "quote": 82230338813.89655,
+              "usd": 82230338813.89655
+            },
+            "market": "raydium-clmm",
+            "quoteToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "decimals": 9,
+            "security": {
+              "freezeAuthority": null,
+              "mintAuthority": null
+            },
+            "deployer": "CJKrW95iMGECdjWtdDnWDAx2cBH7pFE9VywnULfwMapf",
+            "lastUpdated": 1752083656042,
+            "poolId": "3ucNos4NbumPLZNWztqGHNFFgkHeRMBQAVemeeomsUxv"
+          },
+          {
+            "liquidity": {
+              "quote": 10216481.460562477,
+              "usd": 10216481.460562477
+            },
+            "price": {
+              "quote": 153.49494636840186,
+              "usd": 153.49494636840186
+            },
+            "tokenSupply": 535720170.33405286,
+            "lpBurn": 0,
+            "tokenAddress": "So11111111111111111111111111111111111111112",
+            "marketCap": {
+              "quote": 82230338813.89655,
+              "usd": 82230338813.89655
+            },
+            "market": "raydium-clmm",
+            "quoteToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "decimals": 9,
+            "security": {
+              "freezeAuthority": null,
+              "mintAuthority": null
+            },
+            "deployer": "CJKrW95iMGECdjWtdDnWDAx2cBH7pFE9VywnULfwMapf",
+            "lastUpdated": 1752083656042,
+            "poolId": "3ucNos4NbumPLZNWztqGHNFFgkHeRMBQAVemeeomsUxv"
+          },
+          {
+            "liquidity": {
+              "quote": 2545988.4174272097,
+              "usd": 2545988.4174272097
+            },
+            "price": {
+              "quote": 153.48014926193952,
+              "usd": 153.48014926193952
+            },
+            "tokenSupply": 535720170.33405286,
+            "lpBurn": 0,
+            "tokenAddress": "So11111111111111111111111111111111111111112",
+            "marketCap": {
+              "quote": 82222411705.50209,
+              "usd": 82222411705.50209
+            },
+            "market": "raydium-clmm",
+            "quoteToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "decimals": 9,
+            "security": {
+              "freezeAuthority": null,
+              "mintAuthority": null
+            },
+            "deployer": "6wQYcdpUR3naeZJNaJZCAoUZ9zfwUDgc43yoDu9bn5tb",
+            "lastUpdated": 1752083655836,
+            "poolId": "8sLbNZoA1cfnvMJLPfp98ZLAnFSYCFApfJKMbiXNLwxj"
+          },
+          {
+            "liquidity": {
+              "quote": 2545988.4174272097,
+              "usd": 2545988.4174272097
+            },
+            "price": {
+              "quote": 153.48014926193952,
+              "usd": 153.48014926193952
+            },
+            "tokenSupply": 535720170.33405286,
+            "lpBurn": 0,
+            "tokenAddress": "So11111111111111111111111111111111111111112",
+            "marketCap": {
+              "quote": 82222411705.50209,
+              "usd": 82222411705.50209
+            },
+            "market": "raydium-clmm",
+            "quoteToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "decimals": 9,
+            "security": {
+              "freezeAuthority": null,
+              "mintAuthority": null
+            },
+            "deployer": "6wQYcdpUR3naeZJNaJZCAoUZ9zfwUDgc43yoDu9bn5tb",
+            "lastUpdated": 1752083655836,
+            "poolId": "8sLbNZoA1cfnvMJLPfp98ZLAnFSYCFApfJKMbiXNLwxj"
+          },
+          {
+            "liquidity": {
+              "quote": 596117.7939490615,
+              "usd": 596117.7939490615
+            },
+            "price": {
+              "quote": 153.4903084522875,
+              "usd": 153.4903084522875
+            },
+            "tokenSupply": 535720170.33405286,
+            "lpBurn": 0,
+            "tokenAddress": "So11111111111111111111111111111111111111112",
+            "marketCap": {
+              "quote": 82227854188.68578,
+              "usd": 82227854188.68578
+            },
+            "market": "raydium-clmm",
+            "quoteToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "decimals": 9,
+            "security": {
+              "freezeAuthority": null,
+              "mintAuthority": null
+            },
+            "deployer": "57e9WjTwt6S6XJFartPW8GQmGVP9bwz215CYzKvcEgTG",
+            "lastUpdated": 1752083656291,
+            "poolId": "2QdhepnKRTLjjSqPL1PtKNwqrUkoLee5Gqs8bvZhRdMv"
+          },
+          {
+            "liquidity": {
+              "quote": 331377.0031245961,
+              "usd": 331377.0031245961
+            },
+            "price": {
+              "quote": 153.48167652517668,
+              "usd": 153.48167652517668
+            },
+            "tokenSupply": 535720170.33405286,
+            "lpBurn": 0,
+            "tokenAddress": "So11111111111111111111111111111111111111112",
+            "marketCap": {
+              "quote": 82223229891.22365,
+              "usd": 82223229891.22365
+            },
+            "market": "raydium-clmm",
+            "quoteToken": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+            "decimals": 9,
+            "security": {
+              "freezeAuthority": null,
+              "mintAuthority": null
+            },
+            "deployer": "BypCJN8DWv4Yc22rCs2nD74RgPXHv6MT9zVgeyLTycpS",
+            "lastUpdated": 1752083551668,
+            "poolId": "6kT4MhDqKrkWikaGpFCvYsk45BUKXEe2gTpNGAR1YcjS"
+          },
+          {
+            "liquidity": {
+              "quote": 185622.3171777163,
+              "usd": 185622.3171777163
+            },
+            "price": {
+              "quote": 153.466708026735,
+              "usd": 153.466708026735
+            },
+            "tokenSupply": 535720170.33405286,
+            "lpBurn": 0,
+            "tokenAddress": "So11111111111111111111111111111111111111112",
+            "marketCap": {
+              "quote": 82215210964.68883,
+              "usd": 82215210964.68883
+            },
+            "market": "raydium-clmm",
+            "quoteToken": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+            "decimals": 9,
+            "security": {
+              "freezeAuthority": null,
+              "mintAuthority": null
+            },
+            "deployer": "6dijiopTcEFBH6Vesdctn9oUiXXTcpmp7RcA8SAdsbG3",
+            "lastUpdated": 1752083588807,
+            "poolId": "ExcBWu8fGPdJiaF1b1z3iEef38sjQJks8xvj6M85pPY6"
+          },
+          {
+            "liquidity": {
+              "quote": 39997.906687604824,
+              "usd": 39997.906687604824
+            },
+            "price": {
+              "quote": 153.48240169370266,
+              "usd": 153.48240169370266
+            },
+            "tokenSupply": 535720170.33405286,
+            "lpBurn": 0,
+            "tokenAddress": "So11111111111111111111111111111111111111112",
+            "marketCap": {
+              "quote": 82223618378.62991,
+              "usd": 82223618378.62991
+            },
+            "market": "orca",
+            "quoteToken": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+            "decimals": 9,
+            "security": {
+              "freezeAuthority": null,
+              "mintAuthority": null
+            },
+            "lastUpdated": 1752083573569,
+            "poolId": "B6LL9aCWVuo1tTcJoYvCTDqYrq1vjMfci8uHxsm4UxTR"
+          },
+          {
+            "liquidity": {
+              "quote": 18308.362261706006,
+              "usd": 18308.362261706006
+            },
+            "price": {
+              "quote": 153.4850745468318,
+              "usd": 153.4850745468318
+            },
+            "tokenSupply": 535720170.33405286,
+            "lpBurn": 0,
+            "tokenAddress": "So11111111111111111111111111111111111111112",
+            "marketCap": {
+              "quote": 82225050279.96353,
+              "usd": 82225050279.96353
+            },
+            "market": "raydium-clmm",
+            "quoteToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "decimals": 9,
+            "security": {
+              "freezeAuthority": null,
+              "mintAuthority": null
+            },
+            "deployer": "CfXekoBtVo9WDxHXVLoKvahxHebAikMS2LJBeJW2oCWv",
+            "lastUpdated": 1752083615308,
+            "poolId": "EXHyQxMSttcvLPwjENnXCPZ8GmLjJYHtNBnAkcFeFKMn"
+          }
+        ],
+        "events": {
+          "1m": {
+            "priceChangePercentage": 0.014627296469537
+          },
+          "5m": {
+            "priceChangePercentage": -0.01703446347291
+          },
+          "15m": {
+            "priceChangePercentage": 0.045617568881601
+          },
+          "30m": {
+            "priceChangePercentage": -0.27754034591502
+          },
+          "1h": {
+            "priceChangePercentage": -0.93903914911569
+          },
+          "2h": {
+            "priceChangePercentage": -0.20118819405668
+          },
+          "3h": {
+            "priceChangePercentage": 0.15502525793276
+          },
+          "4h": {
+            "priceChangePercentage": -0.31609498564862
+          },
+          "5h": {
+            "priceChangePercentage": -0.56700976525486
+          },
+          "6h": {
+            "priceChangePercentage": -0.29376939479007
+          },
+          "12h": {
+            "priceChangePercentage": 0.40179778335276
+          },
+          "24h": {
+            "priceChangePercentage": 0.88302245168131
+          }
+        },
+        "risk": {
+          "rugged": false,
+          "risks": [],
+          "score": 0,
+          "jupiterVerified": true
+        },
+        "buys": 21,
+        "sells": 18,
+        "txns": 39,
+        "balance": 0.015832111,
+        "value": 2.430149028843585
+      }
+    ],
+    "total": 5.336410150240336,
+    "totalSol": 0.03476603156323118
+  }

@@ -7,6 +7,8 @@
 const { createKeyPairSignerFromBytes } = require('@solana/kit');
 const nacl = require('tweetnacl');
 const EventBus = require('./eventBus');
+const chalk = require('chalk').default;
+const debugMode = process.env.DEBUG_MODE === 'true';
 const keychain = require('./keychain');
 const errorHandler = require('./errorHandler');
 const { Client } = require('@solana-tracker/data-api');
@@ -60,7 +62,9 @@ async function getPrivateKey(publicKey) {
 async function scanAccounts(publicKey) {
   EventBus.emit('solana.scan.start', { publicKey });
   try {
+    if (debugMode) console.log(chalk.blue('[Debug] Calling getWallet:'), publicKey);
     const data = await dataApiClient.getWallet(publicKey);
+    if (debugMode) console.log(chalk.blue('[Debug] getWallet response:'), JSON.stringify(data, null, 2));
     // Persist scan and related data
     const walletRecord = await prisma.wallet.findUnique({ where: { publicKey } });
     if (!walletRecord) {
@@ -226,7 +230,9 @@ async function scanAccounts(publicKey) {
 async function calculatePnl(publicKey) {
   EventBus.emit('solana.pnl.start', { publicKey });
   try {
+    if (debugMode) console.log(chalk.blue('[Debug] Calling getWalletPnL:'), publicKey);
     const data = await dataApiClient.getWalletPnL(publicKey, true, true, false);
+    if (debugMode) console.log(chalk.blue('[Debug] getWalletPnL response:'), JSON.stringify(data, null, 2));
     // Persist PnL snapshot
     const walletRecord = await prisma.wallet.findUnique({ where: { publicKey } });
     if (!walletRecord) {
