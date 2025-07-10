@@ -7,15 +7,15 @@ const chalk = require('chalk').default;
 const debugMode = process.env.DEBUG_MODE === 'true';
 
 /**
- * Handle errors by logging and exiting.
+ * Handle errors by logging (no exit—propagate).
  * @param {Error} error - The error to handle.
  */
-async function handleError(error) {
+function handleError(error) {  // Sync now, since no async
   if (debugMode) {
-    console.error(chalk.red('[Debug]'), error);
+    console.error(chalk.red('[Debug]'), error.stack);  // Added stack for better debug
   }
   console.error(chalk.red('[Error]'), error.message);
-  process.exit(1);
+  // No process.exit—throw in callers if fatal
 }
 
 module.exports = handleError;

@@ -13,7 +13,7 @@ const keychain = require('./keychain');
 const errorHandler = require('./errorHandler');
 const { Client } = require('@solana-tracker/data-api');
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = new PrismaClient();  // Global instance for efficiency
 
 // initialize Data API client
 const dataApiClient = new Client({ apiKey: process.env.SOLANA_API_KEY });
@@ -74,6 +74,11 @@ async function scanAccounts(publicKey) {
 
     // 1. Upsert token metadata
     for (const tokenObj of data.tokens) {
+      // Add null-check for tokenObj.token
+      if (!tokenObj.token || !tokenObj.token.mint) {
+        if (debugMode) console.log(chalk.yellow('[Debug] Skipping invalid token object'));
+        continue;  // Skip bad data to avoid crashes
+      }
       await prisma.token.upsert({
         where: { mint: tokenObj.token.mint },
         create: {
@@ -96,7 +101,12 @@ async function scanAccounts(publicKey) {
       });
 
       // 2. Upsert pools
-      for (const pool of tokenObj.pools) {
+      for (const pool of tokenObj.pools || []) {  // Handle empty pools array
+        // Null-check pool fields
+        if (!pool.poolId || !pool.tokenAddress) {
+          if (debugMode) console.log(chalk.yellow('[Debug] Skipping invalid pool'));
+          continue;
+        }
         await prisma.pool.upsert({
           where: { poolId: pool.poolId },
           create: {
@@ -121,6 +131,8 @@ async function scanAccounts(publicKey) {
                 mint: pool.tokenAddress
               }
             },
+            freezeAuthority: pool.security?.freezeAuthority || null,
+            mintAuthority: pool.security?.mintAuthority || null,
           },
           update: {
             liquidityQuote: pool.liquidity.quote,
@@ -133,6 +145,8 @@ async function scanAccounts(publicKey) {
             marketCapUsd: pool.marketCap.usd,
             deployer: pool.deployer || null,
             lastUpdated: new Date(pool.lastUpdated),
+            freezeAuthority: pool.security?.freezeAuthority || null,
+            mintAuthority: pool.security?.mintAuthority || null,
           },
         });
       }
@@ -161,7 +175,7 @@ async function scanAccounts(publicKey) {
       });
 
       // 4. Upsert price events
-      for (const [interval, ev] of Object.entries(tokenObj.events)) {
+      for (const [interval, ev] of Object.entries(tokenObj.events || {})) {  // Handle empty events
         await prisma.priceEvent.upsert({
           where: {
             balanceId_intervalLabel: {
@@ -201,9 +215,9 @@ async function scanAccounts(publicKey) {
 
     // Extract detailed token holdings
     const tokens = data.tokens.map(item => ({
-      mint: item.token.mint,
-      symbol: item.token.symbol,
-      name: item.token.name || item.token.symbol,
+      mint: item.token?.mint || 'unknown',  // Fallback for mint
+      symbol: item.token?.symbol || 'N/A',
+      name: item.token?.name || item.token?.symbol || 'Unknown',
       balance: item.balance,
       value: item.value,
       pools: item.pools,
@@ -251,8 +265,8 @@ async function calculatePnl(publicKey) {
         winPercentage: data.summary.winPercentage,
         lossPercentage: data.summary.lossPercentage,
         pnlTokens: {
-          create: data.tokens.map(tok => ({
-            tokenMint: tok.token,
+          create: Object.entries(data.tokens).map(([tokenMint, tok]) => ({  // Fixed: Use Object.entries for object
+            tokenMint,
             holding: tok.holding,
             held: tok.held,
             sold: tok.sold,

@@ -3,11 +3,16 @@
  * @see README.md#usage
  */
 
-const ora = require('ora').default;
-const chalk = require('chalk').default;
-const EventBus = require('../core/eventBus');
-const warchestCore = require('../core/warchest');
-const { addWallet, listWallets, calculatePnl } = warchestCore;
+import ora from 'ora';
+import chalk from 'chalk';
+import EventBus from '../core/eventBus.js';
+import {
+  addWallet,
+  listWallets,
+  calculatePnl,
+  resyncWallet, 
+  scanWallet
+} from '../core/warchest.js';
 
 /**
  * Register wallet commands to the CLI.
@@ -55,7 +60,7 @@ function registerWalletCommands(program) {
     .action(async (name) => {
       const spinner = ora(`Resyncing wallet ${name}`).start();
       try {
-        const tokens = await warchestCore.resyncWallet(name);
+        const tokens = await resyncWallet(name);
         spinner.succeed(chalk.green(`Wallet resynced: ${name}`));
         console.log(chalk.bold('\nResync Summary:'));
         console.table(tokens.map(t => ({
@@ -76,7 +81,7 @@ function registerWalletCommands(program) {
     .action(async (pubkey) => {
       const spinner = ora(`Scanning wallet ${pubkey}`).start();
       try {
-        const tokens = await warchestCore.scanWallet(pubkey);
+        const tokens = await scanWallet(pubkey);
         spinner.succeed(chalk.green(`Wallet scanned: ${pubkey}`));
         console.log(chalk.bold('\nScan Summary:'));
         console.table(tokens.map(t => ({
@@ -140,4 +145,4 @@ function registerWalletCommands(program) {
     });
 }
 
-module.exports = registerWalletCommands;
+export default registerWalletCommands;
