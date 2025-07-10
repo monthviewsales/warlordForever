@@ -8,8 +8,8 @@ const Solana = require('./solana');
 const Keychain = require('./keychain');
 const EventBus = require('./eventBus');
 const handleError = require('./errorHandler');
+const prisma = new PrismaClient();  // Global for consistency
 
-const prisma = new PrismaClient();
 
 /**
  * Add a new wallet.
@@ -19,13 +19,12 @@ const prisma = new PrismaClient();
 async function addWallet(name) {
   try {
     const { publicKey, keychainRef } = await Solana.createWallet(name);
-    const wallet = await prisma.wallet.create({
-      data: { name, publicKey, keychainRef }
-    });
+    const wallet = await prisma.wallet.create({ data: { name, publicKey, keychainRef } });
     EventBus.emit('wallet.add', { name, publicKey });
     return wallet;
   } catch (error) {
     handleError(error);
+    throw error;  // Propagate for CLI spinners
   }
 }
 
@@ -38,41 +37,48 @@ async function listWallets() {
     return await prisma.wallet.findMany();
   } catch (error) {
     handleError(error);
+    throw error;
   }
 }
 
 /**
- * Resync wallet data.
+ * Resync wallet data by scanning accounts and persisting results.
  * @param {string} name - Name of the wallet.
+ * @returns {Promise<Array<object>>} Token summaries from the scan.
  */
 async function resyncWallet(name) {
   try {
     const wallet = await prisma.wallet.findUnique({ where: { name } });
     if (!wallet) throw new Error('Wallet not found');
-    await Solana.scanAccounts(wallet.publicKey);
+    const tokens = await Solana.scanAccounts(wallet.publicKey);
     EventBus.emit('wallet.resync', { name });
+    return tokens;
   } catch (error) {
     handleError(error);
+    throw error;
   }
 }
 
 /**
- * Scan wallet balances.
+ * Scan wallet balances and persist results.
  * @param {string} publicKey - Public key of the wallet.
+ * @returns {Promise<Array<object>>} Token summaries from the scan.
  */
 async function scanWallet(publicKey) {
   try {
-    await Solana.scanAccounts(publicKey);
+    const tokens = await Solana.scanAccounts(publicKey);
     EventBus.emit('wallet.scan', { publicKey });
+    return tokens;
   } catch (error) {
     handleError(error);
+    throw error;
   }
 }
 
 /**
- * Calculate P&L for a wallet.
+ * Calculate P&L for a wallet and persist snapshot.
  * @param {string} name - Name of the wallet.
- * @returns {Promise<number>} The P&L value.
+ * @returns {Promise<object>} The P&L data including summary and tokens.
  */
 async function calculatePnl(name) {
   try {
@@ -83,6 +89,7 @@ async function calculatePnl(name) {
     return pnl;
   } catch (error) {
     handleError(error);
+    throw error;
   }
 }
 

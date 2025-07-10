@@ -1,0 +1,73 @@
+{
+    "summary": {
+      "realized": -54.08391822001552,
+      "unrealized": -751.425020473188,
+      "total": -805.5089386932112,
+      "totalInvested": 29109.735082251813,
+      "totalWins": 188,
+      "totalLosses": 372,
+      "averageBuyAmount": 14.8,
+      "winPercentage": 33.51,
+      "lossPercentage": 66.31,
+      "neutralPercentage": 0.18
+    },
+    "pnl_since": 1725141600000,
+    "historic": {
+      "summary": {
+        "1d": {
+          "totalPnL": -804.83904866,
+          "realizedChange": -1.1950244196127642,
+          "unrealizedChange": 0.5251343845719703,
+          "totalChange": -0.6698900350407939,
+          "percentageChange": -0.08323279494920661,
+          "wins": 2,
+          "losses": 3,
+          "winPercentage": 40,
+          "lossPercentage": 60,
+          "newTokens": {
+            "count": 3,
+            "total_invested": 9.039081285481998,
+            "total_current_value": 3.564178922966,
+            "total_pnl": -0.6698470914099999,
+            "pnl_percentage": -7.41
+          }
+        },
+        "7d": {
+          "totalPnL": -632.89723439,
+          "realizedChange": -174.3492342050567,
+          "unrealizedChange": 1.737529906734835,
+          "totalChange": -172.61170429832185,
+          "percentageChange": -27.273259372567395,
+          "wins": 17,
+          "losses": 34,
+          "winPercentage": 33.33333333333333,
+          "lossPercentage": 66.66666666666666,
+          "newTokens": {
+            "count": 45,
+            "total_invested": 2146.346735691818,
+            "total_current_value": 23.190793177644,
+            "total_pnl": -169.93446304553595,
+            "pnl_percentage": -7.92
+          }
+        },
+        "30d": {
+          "totalPnL": -432.72449234,
+          "realizedChange": -371.08931024481603,
+          "unrealizedChange": -1.6951361109751133,
+          "totalChange": -372.78444635579115,
+          "percentageChange": -86.14821970028828,
+          "wins": 55,
+          "losses": 129,
+          "winPercentage": 29.891304347826086,
+          "lossPercentage": 70.1086956521739,
+          "newTokens": {
+            "count": 167,
+            "total_invested": 4388.691897318875,
+            "total_current_value": 33.330454008364,
+            "total_pnl": -377.7453064842001,
+            "pnl_percentage": -8.61
+          }
+        }
+      }
+    }
+  }

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const { program } = require('commander');
 require('dotenv').config();
-const registerWalletCommands = require('./cli/walletCommands');
+const registerWalletCommands = require('./cli/walletCommands').default;
 
 program
   .name('warchest')

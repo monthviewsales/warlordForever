@@ -3,16 +3,16 @@
  * @see README.md#usage
  */
 
-const ora = require('ora').default;
-const chalk = require('chalk').default;
-const EventBus = require('../core/eventBus');
-const {
+import ora from 'ora';
+import chalk from 'chalk';
+import EventBus from '../core/eventBus.js';
+import {
   addWallet,
   listWallets,
-  resyncWallet,
-  scanWallet,
-  calculatePnl
-} = require('../core/warchest');
+  calculatePnl,
+  resyncWallet, 
+  scanWallet
+} from '../core/warchest.js';
 
 /**
  * Register wallet commands to the CLI.
@@ -60,8 +60,15 @@ function registerWalletCommands(program) {
     .action(async (name) => {
       const spinner = ora(`Resyncing wallet ${name}`).start();
       try {
-        await resyncWallet(name);
+        const tokens = await resyncWallet(name);
         spinner.succeed(chalk.green(`Wallet resynced: ${name}`));
+        console.log(chalk.bold('\nResync Summary:'));
+        console.table(tokens.map(t => ({
+          Mint: t.mint,
+          Symbol: t.symbol,
+          Balance: t.balance,
+          Value: t.value,
+        })));
         EventBus.emit('wallet.resync', { name });
       } catch (error) {
         spinner.fail(chalk.red(error.message));
@@ -74,8 +81,15 @@ function registerWalletCommands(program) {
     .action(async (pubkey) => {
       const spinner = ora(`Scanning wallet ${pubkey}`).start();
       try {
-        await scanWallet(pubkey);
+        const tokens = await scanWallet(pubkey);
         spinner.succeed(chalk.green(`Wallet scanned: ${pubkey}`));
+        console.log(chalk.bold('\nScan Summary:'));
+        console.table(tokens.map(t => ({
+          Mint: t.mint,
+          Symbol: t.symbol,
+          Balance: t.balance,
+          Value: t.value,
+        })));
         EventBus.emit('wallet.scan', { publicKey: pubkey });
       } catch (error) {
         spinner.fail(chalk.red(error.message));
@@ -131,4 +145,4 @@ function registerWalletCommands(program) {
     });
 }
 
-module.exports = registerWalletCommands;
+export default registerWalletCommands;

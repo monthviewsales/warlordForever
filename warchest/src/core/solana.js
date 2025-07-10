@@ -4,15 +4,16 @@
  */
 
 // import RPC and keypair signer utilities from kit
-const { createSolanaRpc, createKeyPairSignerFromBytes } = require('@solana/kit');
+const { createKeyPairSignerFromBytes } = require('@solana/kit');
 const nacl = require('tweetnacl');
 const EventBus = require('./eventBus');
+const chalk = require('chalk').default;
+const debugMode = process.env.DEBUG_MODE === 'true';
 const keychain = require('./keychain');
 const errorHandler = require('./errorHandler');
 const { Client } = require('@solana-tracker/data-api');
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
-const LAMPORTS_PER_SOL = 1e9;
+const prisma = new PrismaClient();  // Global instance for efficiency
 
 // initialize Data API client
 const dataApiClient = new Client({ apiKey: process.env.SOLANA_API_KEY });
@@ -53,26 +54,6 @@ async function getPrivateKey(publicKey) {
   }
 }
 
-/**
- * Sync wallet accounts from the network.
- * @param {string} publicKey - Public key of the wallet.
- */
-async function syncWallet(publicKey) {
-  EventBus.emit('solana.sync.start', { publicKey });
-  try {
-    const rpc = createSolanaRpc(process.env.SOLANA_RPC_URL);
-    const lamports = await rpc.getBalance(publicKey).send();
-    const solBalance = lamports / LAMPORTS_PER_SOL;
-    EventBus.emit('solana.sync.complete', {
-      publicKey,
-      balances: { sol: solBalance }
-    });
-    return { sol: solBalance };
-  } catch (err) {
-    errorHandler(err);
-    throw err;
-  }
-}
 
 /**
  * Scan token accounts for a wallet.
@@ -81,7 +62,9 @@ async function syncWallet(publicKey) {
 async function scanAccounts(publicKey) {
   EventBus.emit('solana.scan.start', { publicKey });
   try {
+    if (debugMode) console.log(chalk.blue('[Debug] Calling getWallet:'), publicKey);
     const data = await dataApiClient.getWallet(publicKey);
+    if (debugMode) console.log(chalk.blue('[Debug] getWallet response:'), JSON.stringify(data, null, 2));
     // Persist scan and related data
     const walletRecord = await prisma.wallet.findUnique({ where: { publicKey } });
     if (!walletRecord) {
@@ -91,6 +74,11 @@ async function scanAccounts(publicKey) {
 
     // 1. Upsert token metadata
     for (const tokenObj of data.tokens) {
+      // Add null-check for tokenObj.token
+      if (!tokenObj.token || !tokenObj.token.mint) {
+        if (debugMode) console.log(chalk.yellow('[Debug] Skipping invalid token object'));
+        continue;  // Skip bad data to avoid crashes
+      }
       await prisma.token.upsert({
         where: { mint: tokenObj.token.mint },
         create: {
@@ -113,7 +101,12 @@ async function scanAccounts(publicKey) {
       });
 
       // 2. Upsert pools
-      for (const pool of tokenObj.pools) {
+      for (const pool of tokenObj.pools || []) {  // Handle empty pools array
+        // Null-check pool fields
+        if (!pool.poolId || !pool.tokenAddress) {
+          if (debugMode) console.log(chalk.yellow('[Debug] Skipping invalid pool'));
+          continue;
+        }
         await prisma.pool.upsert({
           where: { poolId: pool.poolId },
           create: {
@@ -138,6 +131,8 @@ async function scanAccounts(publicKey) {
                 mint: pool.tokenAddress
               }
             },
+            freezeAuthority: pool.security?.freezeAuthority || null,
+            mintAuthority: pool.security?.mintAuthority || null,
           },
           update: {
             liquidityQuote: pool.liquidity.quote,
@@ -150,6 +145,8 @@ async function scanAccounts(publicKey) {
             marketCapUsd: pool.marketCap.usd,
             deployer: pool.deployer || null,
             lastUpdated: new Date(pool.lastUpdated),
+            freezeAuthority: pool.security?.freezeAuthority || null,
+            mintAuthority: pool.security?.mintAuthority || null,
           },
         });
       }
@@ -178,7 +175,7 @@ async function scanAccounts(publicKey) {
       });
 
       // 4. Upsert price events
-      for (const [interval, ev] of Object.entries(tokenObj.events)) {
+      for (const [interval, ev] of Object.entries(tokenObj.events || {})) {  // Handle empty events
         await prisma.priceEvent.upsert({
           where: {
             balanceId_intervalLabel: {
@@ -218,9 +215,9 @@ async function scanAccounts(publicKey) {
 
     // Extract detailed token holdings
     const tokens = data.tokens.map(item => ({
-      mint: item.token.mint,
-      symbol: item.token.symbol,
-      name: item.token.name || item.token.symbol,
+      mint: item.token?.mint || 'unknown',  // Fallback for mint
+      symbol: item.token?.symbol || 'N/A',
+      name: item.token?.name || item.token?.symbol || 'Unknown',
       balance: item.balance,
       value: item.value,
       pools: item.pools,
@@ -247,7 +244,9 @@ async function scanAccounts(publicKey) {
 async function calculatePnl(publicKey) {
   EventBus.emit('solana.pnl.start', { publicKey });
   try {
+    if (debugMode) console.log(chalk.blue('[Debug] Calling getWalletPnL:'), publicKey);
     const data = await dataApiClient.getWalletPnL(publicKey, true, true, false);
+    if (debugMode) console.log(chalk.blue('[Debug] getWalletPnL response:'), JSON.stringify(data, null, 2));
     // Persist PnL snapshot
     const walletRecord = await prisma.wallet.findUnique({ where: { publicKey } });
     if (!walletRecord) {
@@ -266,8 +265,8 @@ async function calculatePnl(publicKey) {
         winPercentage: data.summary.winPercentage,
         lossPercentage: data.summary.lossPercentage,
         pnlTokens: {
-          create: data.tokens.map(tok => ({
-            tokenMint: tok.token,
+          create: Object.entries(data.tokens).map(([tokenMint, tok]) => ({  // Fixed: Use Object.entries for object
+            tokenMint,
             holding: tok.holding,
             held: tok.held,
             sold: tok.sold,
@@ -298,7 +297,6 @@ async function calculatePnl(publicKey) {
 module.exports = {
   createWallet,
   getPrivateKey,
-  syncWallet,
   scanAccounts,
   calculatePnl
 };
