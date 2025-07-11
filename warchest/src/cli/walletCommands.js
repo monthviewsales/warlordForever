@@ -5,6 +5,7 @@
 
 import ora from 'ora';
 import chalk from 'chalk';
+import inquirer from 'inquirer';
 import EventBus from '../core/eventBus.js';
 import {
   addWallet,
@@ -13,6 +14,7 @@ import {
   resyncWallet, 
   scanWallet
 } from '../core/warchest.js';
+const debugMode = process.env.DEBUG_MODE === 'true';
 
 /**
  * Register wallet commands to the CLI.
@@ -50,6 +52,39 @@ function registerWalletCommands(program) {
         });
         EventBus.emit('wallet.list', wallets);
       } catch (error) {
+        spinner.fail(chalk.red(error.message));
+      }
+    });
+  
+  walletCmd
+    .command('import <name>')
+    .description('Import a wallet from private key')
+    .action(async (name) => {
+      // ... inside .action(async (name) => { ...
+      const spinner = ora(`Importing wallet ${name}`).start();
+      try {
+        if (debugMode) console.log(chalk.blue('[Debug] CLI: Starting import action for:'), name);  // ADD THIS
+
+        // Secure prompt for private key (no echo)
+        if (debugMode) console.log(chalk.blue('[Debug] CLI: Prompting for key...'));  // ADD THIS
+        const { privateKeyBase58 } = await inquirer.prompt([
+          {
+            type: 'password',  // Masks input
+            name: 'privateKeyBase58',
+            message: 'Enter the base58 private key (it won\'t show up—security vibes!):',
+            validate: (input) => input ? true : 'Key required, bro!'
+          }
+        ]);
+        if (debugMode) console.log(chalk.blue('[Debug] CLI: Got key input (length:'), privateKeyBase58.length, ')');  // ADD THIS (length only, no key!)
+
+        if (debugMode) console.log(chalk.blue('[Debug] CLI: Calling warchest importWallet...'));  // ADD THIS
+        const walletRecord = await importWallet(name, privateKeyBase58);  // Note: Changed from your pasted 'await importWallet' to match var name
+        if (debugMode) console.log(chalk.blue('[Debug] CLI: Import done, pubkey:'), walletRecord.publicKey);  // ADD THIS
+
+        spinner.succeed(chalk.green(`Wallet imported: ${walletRecord.publicKey}`));
+        EventBus.emit('wallet.import', { name: walletRecord.name, publicKey: walletRecord.publicKey });
+      } catch (error) {
+        if (debugMode) console.log(chalk.blue('[Debug] CLI: Import action error:'), error.stack);  // ADD THIS
         spinner.fail(chalk.red(error.message));
       }
     });

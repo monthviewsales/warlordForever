@@ -14,6 +14,8 @@ const errorHandler = require('./errorHandler');
 const { Client } = require('@solana-tracker/data-api');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();  // Global instance for efficiency
+const inquirer = require('inquirer');
+const bs58 = require('bs58');
 
 // initialize Data API client
 const dataApiClient = new Client({ apiKey: process.env.SOLANA_API_KEY });
@@ -35,6 +37,45 @@ async function createWallet(name) {
     await keychain.saveKey(name, privateKeyHex);
     return { publicKey, keychainRef: name };
   } catch (err) {
+    errorHandler(err);
+    throw err;
+  }
+}
+
+/**
+ * Import a wallet from base58 private key.
+ * @param {string} name - Name for the wallet.
+ * @param {string} privateKeyBase58 - Base58-encoded private key.
+ * @returns {Promise<{publicKey: string, keychainRef: string}>}
+ */
+async function importWallet(name, privateKeyBase58) {
+  try {
+    if (debugMode) console.log(chalk.blue('[Debug] solana: Starting importWallet for name:'), name);  // ADD THIS
+    // Decode base58 to bytes (full 64-byte Ed25519 secret key)
+    const secretKeyBytes = bs58.decode(privateKeyBase58);
+    if (debugMode) console.log(chalk.blue('[Debug] solana: Decoded key bytes length:'), secretKeyBytes.length);  // ADD THIS
+    if (secretKeyBytes.length !== 64) {
+      throw new Error('Invalid private key length—should be 64 bytes!');
+    }
+
+    // Validate by creating signer (will throw if bogus)
+    if (debugMode) console.log(chalk.blue('[Debug] solana: Creating signer...'));  // ADD THIS
+    const signer = await createKeyPairSignerFromBytes(secretKeyBytes);
+    const publicKey = signer.address;
+    if (debugMode) console.log(chalk.blue('[Debug] solana: Derived publicKey:'), publicKey);  // ADD THIS
+
+    // Hex the secret key for keychain storage (matches createWallet)
+    const privateKeyHex = Buffer.from(secretKeyBytes).toString('hex');
+    if (debugMode) console.log(chalk.blue('[Debug] solana: Hexed key for keychain...'));  // ADD THIS
+
+    // Save to keychain
+    if (debugMode) console.log(chalk.blue('[Debug] solana: Saving to keychain...'));  // ADD THIS
+    await keychain.saveKey(name, privateKeyHex);
+
+    console.log(chalk.yellow('Importing this key... if it\'s from a sketchy airdrop, don\'t blame me! 😎'));
+    return { publicKey, keychainRef: name };
+  } catch (err) {
+    if (debugMode) console.log(chalk.blue('[Debug] solana: importWallet error:'), err.stack);  // ADD THIS FOR STACK
     errorHandler(err);
     throw err;
   }
@@ -296,6 +337,7 @@ async function calculatePnl(publicKey) {
 
 module.exports = {
   createWallet,
+  importWallet,
   getPrivateKey,
   scanAccounts,
   calculatePnl
