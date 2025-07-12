@@ -8,23 +8,37 @@ datasource db {
 }
 
 model Wallet {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  publicKey   String   @unique
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  publicKey   String    @unique
   keychainRef String
   tags        String?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
   balances    Balance[]
   trades      Trade[]
+  pnlScans    PnlScan[] @relation("WalletToPnlScans")
 }
 
 model Token {
-  mint     String   @id
-  symbol   String
-  name     String
-  decimals Int
-  balances Balance[]
-  trades   Trade[]
+  mint            String     @id
+  symbol          String
+  name            String
+  decimals        Int
+  uri             String?
+  description     String?
+  image           String?
+  hasFileMetaData Boolean    @default(false)
+  showName        Boolean    @default(false)
+  strictSocials   Json?
+  twitter         String?
+  website         String?
+  creationCreator String?
+  creationTx      String?
+  creationTime    DateTime?
+  balances        Balance[]
+  trades          Trade[]
+  pnlTokens       PnlToken[] @relation("TokenToPnlTokens")
+  pools           Pool[]     @relation("TokenToPools")
 }
 
 model Balance {
@@ -35,6 +49,15 @@ model Balance {
   tokenMint    String
   amount       Float
   lastSyncedAt DateTime @default(now())
+
+  value   Float
+  holders Int
+  buys    Int
+  sells   Int
+  txns    Int
+
+  priceEvents PriceEvent[]
+  riskProfile RiskProfile?
 }
 
 model Trade {
@@ -47,4 +70,83 @@ model Trade {
   amount    Float
   price     Float
   timestamp DateTime
+}
+
+model PnlScan {
+  id               Int        @id @default(autoincrement())
+  scanTime         DateTime   @default(now())
+  wallet           Wallet     @relation("WalletToPnlScans", fields: [walletId], references: [id])
+  walletId         Int
+  realized         Float
+  unrealized       Float
+  total            Float
+  totalInvested    Float
+  averageBuyAmount Float
+  totalWins        Int
+  totalLosses      Int
+  winPercentage    Float
+  lossPercentage   Float
+  tokens           PnlToken[]
+}
+
+model PnlToken {
+  id               Int     @id @default(autoincrement())
+  pnlScan          PnlScan @relation(fields: [pnlScanId], references: [id])
+  pnlScanId        Int
+  token            Token   @relation("TokenToPnlTokens", fields: [tokenMint], references: [mint])
+  tokenMint        String
+  holding          Float
+  held             Float
+  sold             Float
+  realized         Float
+  unrealized       Float
+  total            Float
+  totalSold        Float
+  totalInvested    Float
+  averageBuyAmount Float
+  currentValue     Float
+  costBasis        Float
+}
+
+model Pool {
+  id              Int       @id @default(autoincrement())
+  poolId          String    @unique
+  token           Token     @relation("TokenToPools", fields: [tokenMint], references: [mint])
+  tokenMint       String
+  liquidityQuote  Float
+  liquidityUsd    Float
+  priceQuote      Float
+  priceUsd        Float
+  tokenSupply     Float
+  lpBurn          Float
+  marketCapQuote  Float
+  marketCapUsd    Float
+  market          String
+  quoteToken      String
+  decimals        Int
+  freezeAuthority String?
+  mintAuthority   String?
+  deployer        String?
+  lastUpdated     DateTime
+  createdAt       DateTime?
+}
+
+model PriceEvent {
+  id            String  @id @default(cuid())
+  balanceId     Int
+  intervalLabel String
+  pctChange     Float
+  balance       Balance @relation(fields: [balanceId], references: [id])
+
+  @@unique([balanceId, intervalLabel])
+}
+
+model RiskProfile {
+  id              String  @id @default(cuid())
+  balanceId       Int     @unique
+  rugged          Boolean
+  risksJson       Json
+  score           Int
+  jupiterVerified Boolean
+  balance         Balance @relation(fields: [balanceId], references: [id])
 }
