@@ -1,3 +1,4 @@
+.DS_Store
 # Logs
 logs
 *.log
@@ -143,3 +144,9 @@ warchest/tmp/jest_cache/
 warchest/.DS_Store
 
 warchest/src/.DS_Store
+
+warchest/jest_cache/.DS_Store
+
+warchest/jest_cache/
+
+warchest/tmp/
