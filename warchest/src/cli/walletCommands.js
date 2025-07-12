@@ -9,6 +9,7 @@ import inquirer from 'inquirer';
 import EventBus from '../core/eventBus.js';
 import {
   addWallet,
+  importWalletFlexible,
   listWallets,
   calculatePnl,
   resyncWallet, 
@@ -67,18 +68,18 @@ function registerWalletCommands(program) {
 
         // Secure prompt for private key (no echo)
         if (debugMode) console.log(chalk.blue('[Debug] CLI: Prompting for key...'));  // ADD THIS
-        const { privateKeyBase58 } = await inquirer.prompt([
+        const { rawKeyInput } = await inquirer.prompt([
           {
             type: 'password',  // Masks input
-            name: 'privateKeyBase58',
-            message: 'Enter the base58 private key (it won\'t show up—security vibes!):',
+            name: 'rawKeyInput',
+            message: 'Paste your private key (base58, hex, or path to .json):',
             validate: (input) => input ? true : 'Key required, bro!'
           }
         ]);
-        if (debugMode) console.log(chalk.blue('[Debug] CLI: Got key input (length:'), privateKeyBase58.length, ')');  // ADD THIS (length only, no key!)
+        if (debugMode) console.log(chalk.blue('[Debug] CLI: Got key input (length:'), rawKeyInput.length, ')');  // ADD THIS (length only, no key!)
 
-        if (debugMode) console.log(chalk.blue('[Debug] CLI: Calling warchest importWallet...'));  // ADD THIS
-        const walletRecord = await importWallet(name, privateKeyBase58);  // Note: Changed from your pasted 'await importWallet' to match var name
+        if (debugMode) console.log(chalk.blue('[Debug] CLI: Calling warchest importWalletFlexible...'));  // ADD THIS
+        const walletRecord = await importWalletFlexible(name, rawKeyInput);
         if (debugMode) console.log(chalk.blue('[Debug] CLI: Import done, pubkey:'), walletRecord.publicKey);  // ADD THIS
 
         spinner.succeed(chalk.green(`Wallet imported: ${walletRecord.publicKey}`));

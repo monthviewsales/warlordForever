@@ -4,11 +4,13 @@
  */
 
 const { PrismaClient } = require('@prisma/client');
-const Solana = require('./solana');
+const { createWallet, importWallet, importWalletFlexible, scanAccounts, calculatePnl: calculatePnlFromSolana } = require('./solana');
 const Keychain = require('./keychain');
 const EventBus = require('./eventBus');
+const chalk = require('chalk').default;
 const handleError = require('./errorHandler');
 const prisma = new PrismaClient();  // Global for consistency
+const debugMode = process.env.DEBUG_MODE === 'true';
 
 
 /**
@@ -65,7 +67,7 @@ async function resyncWallet(name) {
  * @param {string} privateKeyBase58 - Base58-encoded private key.
  * @returns {Promise<object>} The imported wallet record.
  */
-async function importWallet(name, privateKeyBase58) {
+async function importWalletRecord(name, privateKeyBase58) {
   try {
     if (debugMode) console.log(chalk.blue('[Debug] warchest: Starting importWallet for name:'), name);  // ADD THIS
     const { publicKey, keychainRef } = await Solana.importWallet(name, privateKeyBase58);
@@ -106,7 +108,7 @@ async function calculatePnl(name) {
   try {
     const wallet = await prisma.wallet.findUnique({ where: { name } });
     if (!wallet) throw new Error('Wallet not found');
-    const pnl = await Solana.calculatePnl(wallet.publicKey);
+    const pnl = await calculatePnlFromSolana(wallet.publicKey);
     EventBus.emit('wallet.pnl', { name, pnl });
     return pnl;
   } catch (error) {
@@ -117,7 +119,8 @@ async function calculatePnl(name) {
 
 module.exports = {
   addWallet,
-  importWallet,
+  importWallet: importWalletRecord,
+  importWalletFlexible,
   listWallets,
   resyncWallet,
   scanWallet,
