@@ -4,11 +4,13 @@
  */
 
 const { PrismaClient } = require('@prisma/client');
-const Solana = require('./solana');
+const { createWallet, importWallet, importWalletFlexible, scanAccounts, calculatePnl: calculatePnlFromSolana } = require('./solana');
 const Keychain = require('./keychain');
 const EventBus = require('./eventBus');
+const chalk = require('chalk').default;
 const handleError = require('./errorHandler');
 const prisma = new PrismaClient();  // Global for consistency
+const debugMode = process.env.DEBUG_MODE === 'true';
 
 
 /**
@@ -60,6 +62,28 @@ async function resyncWallet(name) {
 }
 
 /**
+ * Import an existing wallet.
+ * @param {string} name - Name of the wallet.
+ * @param {string} privateKeyBase58 - Base58-encoded private key.
+ * @returns {Promise<object>} The imported wallet record.
+ */
+async function importWalletRecord(name, privateKeyBase58) {
+  try {
+    if (debugMode) console.log(chalk.blue('[Debug] warchest: Starting importWallet for name:'), name);  // ADD THIS
+    const { publicKey, keychainRef } = await Solana.importWallet(name, privateKeyBase58);
+    if (debugMode) console.log(chalk.blue('[Debug] warchest: Got pubkey from solana:'), publicKey);  // ADD THIS
+    const wallet = await prisma.wallet.create({ data: { name, publicKey, keychainRef } });
+    if (debugMode) console.log(chalk.blue('[Debug] warchest: DB create done for:'), wallet.publicKey);  // ADD THIS
+    EventBus.emit('wallet.import', { name, publicKey });
+    return wallet;
+  } catch (error) {
+    if (debugMode) console.log(chalk.blue('[Debug] warchest: importWallet error:'), error.stack);  // ADD THIS FOR STACK
+    handleError(error);
+    throw error;
+  }
+}
+
+/**
  * Scan wallet balances and persist results.
  * @param {string} publicKey - Public key of the wallet.
  * @returns {Promise<Array<object>>} Token summaries from the scan.
@@ -84,7 +108,7 @@ async function calculatePnl(name) {
   try {
     const wallet = await prisma.wallet.findUnique({ where: { name } });
     if (!wallet) throw new Error('Wallet not found');
-    const pnl = await Solana.calculatePnl(wallet.publicKey);
+    const pnl = await calculatePnlFromSolana(wallet.publicKey);
     EventBus.emit('wallet.pnl', { name, pnl });
     return pnl;
   } catch (error) {
@@ -95,6 +119,8 @@ async function calculatePnl(name) {
 
 module.exports = {
   addWallet,
+  importWallet: importWalletRecord,
+  importWalletFlexible,
   listWallets,
   resyncWallet,
   scanWallet,

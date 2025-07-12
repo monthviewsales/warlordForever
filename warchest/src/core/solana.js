@@ -14,6 +14,8 @@ const errorHandler = require('./errorHandler');
 const { Client } = require('@solana-tracker/data-api');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();  // Global instance for efficiency
+const inquirer = require('inquirer');
+const bs58 = require('bs58');
 
 // initialize Data API client
 const dataApiClient = new Client({ apiKey: process.env.SOLANA_API_KEY });
@@ -34,6 +36,90 @@ async function createWallet(name) {
     // save to keychain
     await keychain.saveKey(name, privateKeyHex);
     return { publicKey, keychainRef: name };
+  } catch (err) {
+    errorHandler(err);
+    throw err;
+  }
+}
+
+/**
+ * Import a wallet from base58 private key.
+ * @param {string} name - Name for the wallet.
+ * @param {string} privateKeyBase58 - Base58-encoded private key.
+ * @returns {Promise<{publicKey: string, keychainRef: string}>}
+ */
+async function importWallet(name, privateKeyBase58) {
+  try {
+    if (debugMode) console.log(chalk.blue('[Debug] solana: Starting importWallet for name:'), name);  // ADD THIS
+    // Decode base58 to bytes (full 64-byte Ed25519 secret key)
+    const fullKeyBytes = bs58.decode(privateKeyBase58);
+    const secretKeyBytes = fullKeyBytes.slice(0, 32);
+    if (debugMode) console.log(chalk.blue('[Debug] solana: Decoded key bytes length:'), fullKeyBytes.length);  // ADD THIS
+    if (fullKeyBytes.length !== 64) {
+      throw new Error('Invalid private key length—should be 64 bytes!');
+    }
+
+    // Validate by creating signer (will throw if bogus)
+    if (debugMode) console.log(chalk.blue('[Debug] solana: Creating signer...'));  // ADD THIS
+    const signer = await createKeyPairSignerFromBytes(fullKeyBytes);
+    const publicKey = signer.address;
+    if (debugMode) console.log(chalk.blue('[Debug] solana: Derived publicKey:'), publicKey);  // ADD THIS
+
+    // Hex the secret key for keychain storage (matches createWallet)
+    const privateKeyHex = Buffer.from(fullKeyBytes).toString('hex');
+    if (debugMode) console.log(chalk.blue('[Debug] solana: Hexed key for keychain...'));  // ADD THIS
+
+    // Save to keychain
+    if (debugMode) console.log(chalk.blue('[Debug] solana: Saving to keychain...'));  // ADD THIS
+    await keychain.saveKey(name, privateKeyHex);
+
+    console.log(chalk.yellow('Importing this key... if it\'s from a sketchy airdrop, don\'t blame me! 😎'));
+    return { publicKey, keychainRef: name };
+  } catch (err) {
+    if (debugMode) console.log(chalk.blue('[Debug] solana: importWallet error:'), err.stack);  // ADD THIS FOR STACK
+    errorHandler(err);
+    throw err;
+  }
+}
+
+const fs = require('fs');
+const path = require('path');
+
+/**
+ * Import a wallet from various input formats: base58 string, hex string, or a JSON file path.
+ * @param {string} name - Name to save the wallet under.
+ * @param {string} input - Private key as base58, hex, or JSON file path.
+ * @returns {Promise<{publicKey: string, keychainRef: string}>}
+ */
+async function importWalletFlexible(name, input) {
+  try {
+    let privateKeyBytes;
+
+    if (input.endsWith('.json') && fs.existsSync(input)) {
+      const fileContent = JSON.parse(fs.readFileSync(path.resolve(input), 'utf8'));
+      if (!Array.isArray(fileContent)) {
+        throw new Error('Invalid JSON keypair format: expected array of numbers.');
+      }
+      privateKeyBytes = Uint8Array.from(fileContent);
+    } else if (/^[0-9a-f]{128}$/i.test(input)) {
+      // Looks like a 64-byte hex string
+      privateKeyBytes = Buffer.from(input, 'hex');
+    } else {
+      // Try base58 decode
+      privateKeyBytes = bs58.decode(input);
+    }
+
+    if (privateKeyBytes.length !== 64) {
+      throw new Error('Invalid private key: expected 64 bytes after decoding.');
+    }
+
+    const base58Key = bs58.encode(
+      new Uint8Array([
+        ...privateKeyBytes.slice(0, 32),
+        ...privateKeyBytes.slice(32)
+      ])
+    );
+    return await importWallet(name, base58Key);
   } catch (err) {
     errorHandler(err);
     throw err;
@@ -296,7 +382,10 @@ async function calculatePnl(publicKey) {
 
 module.exports = {
   createWallet,
+  importWallet,
+  importWalletFlexible,
   getPrivateKey,
   scanAccounts,
   calculatePnl
 };
+
